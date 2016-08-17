@@ -15,10 +15,16 @@ class Contructor(object):
         for item in self.seen:
             self.id[item] = cnt
             cnt += 1
+            if cnt % 100 == 0:
+                print('now_countruct', cnt)
         return self.id
 
     def construct_urls(self):
+        cnt = 0
         for url in self.seen:
+            cnt += 1
+            if cnt % 100 == 0:
+                print('now_countruct', cnt)
             this_x = self.id[url]
             temp_obj = URL(url, this_x)
             html_str = GetHtmlStr(url)

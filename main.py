@@ -2,10 +2,10 @@
 
 from spider import *
 from Constructor import *
-from rankpage import *
+#from rankpage import *
 from URL import *
 from utility import *
-from spliter import *
+#from spliter import *
 import time
 import json
 
@@ -28,28 +28,35 @@ def WriteToFile(url):
     f.write(str(url.rank))
     f.write('\n')
     f.close()
-
+print('Spider_start')
 start = time.clock()
 spider = Spider('http://news.dlut.edu.cn/')
 hash_table = spider.my_multythread()
 print('Spider_over')
-
+print('construct-_start')
 contr = Contructor(hash_table)
+print('construct-_id')
 id = contr.construct_id()
+print('construct-_urls')
 urls = contr.construct_urls()
 print('Construct-Over')
 
-A = GetMatrixA(urls, id)
-ranker = RankPage(A)
-rankB = ranker.calcu()
-for i in range(len(rankB)):
-    urls[i].rank = rankB[i]
+# A = GetMatrixA(urls, id)
+# ranker = RankPage(A)
+# rankB = ranker.calcu()
+# for i in range(len(rankB)):
+#     urls[i].rank = rankB[i]
 #urls = sorted(urls, key=lambda x: x.rank, reverse=True)
 urls_iter = filter(lambda url: len(url.link_to) != 0, urls)
-print("Rank & sort & filter Over")
+print("sort & filter Over")
 #有些id被过滤掉了，因此存在的id可能不是连续的
 
+print('Write-begin')
+cnt = 0
 for item in urls_iter:
+    cnt += 1
+    if cnt % 100 == 0:
+        print('now-write', cnt)
     WriteToFile(item)
 print('Write-info-over')
 end = time.clock()

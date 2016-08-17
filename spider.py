@@ -2,20 +2,23 @@
 import queue
 import threading
 from my_parser import *
+counter = 0
 
 class Spider(object):
     
     def __init__(self, rooturl):
         self.root_url = rooturl
-        self.counter = 0
+
         self.url_queue = queue.Queue()
         self.seen = set()
-        self.f = open("rec.txt", "w")
-        self.maxlen = 20000
+        #self.f = open("rec.txt", "w")
+        self.maxlen = 5000
     def one_thread(self, start_url):
-        
+        global counter
         self.url_queue.put(start_url)
-        while not self.url_queue.empty() and self.counter < self.maxlen:
+        while not self.url_queue.empty() and counter < self.maxlen:
+            if self.seen.__len__() < self.maxlen:
+                return
             current_url = self.url_queue.get()  # 拿出队例中第一个的url
             html_str = GetHtmlStr(current_url)
             if html_str != '':
@@ -24,12 +27,12 @@ class Spider(object):
                     if item == '' or item in self.seen:
                         continue
                     self.seen.add(item)
-                    self.counter += 1
+                    counter += 1
                     ##LOG##
-                    if self.counter % 1000 == 0:
-                        print(self.counter)
-                    self.f.write(str(item))
-                    self.f.write('\n')
+                    if counter % 100 == 0:
+                        print(counter)
+                    #self.f.write(str(item))
+                    #self.f.write('\n')
                     ##LOG##
                     self.url_queue.put(item)
 
@@ -44,8 +47,8 @@ class Spider(object):
             if item == '' or item in self.seen:
                 continue
             self.seen.add(item)
-            self.f.write(str(item))
-            self.f.write('\n')
+            #self.f.write(str(item))
+            #self.f.write('\n')
             self.url_queue.put(item)
             tmp = threading.Thread(target=self.one_thread, args=(item,))
             threads.append(tmp)
