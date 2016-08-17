@@ -9,6 +9,19 @@ from utility import *
 import time
 import json
 
+
+
+
+
+import sys
+
+oldStdout = None
+logfile = None
+logfile = open('log.txt','w+')
+oldStdout = sys.stdout
+sys.stdout = logfile
+
+
 def WriteToFile(url):
     f = open('info/' + str(url.id) + '.txt', 'w+', encoding='utf-8')
     f.write(url.url)
@@ -66,12 +79,10 @@ print(end - start, 'second_cost')
 
 
 
-
-
-
-
-
-
+if logfile:
+    logfile.close()
+if oldStdout:
+    sys.stdout = oldStdout
 
 
 

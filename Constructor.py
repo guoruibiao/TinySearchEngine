@@ -3,6 +3,7 @@
 
 from my_parser import *
 from URL import *
+
 class Contructor(object):
 
     def __init__(self, seen):
@@ -41,6 +42,7 @@ class Contructor(object):
             self.urls.append(temp_obj)
 
         return self.urls
+
 
 
 
