@@ -11,16 +11,15 @@ from spliter import *
 from URL import *
 from ObjectConstructor import *
 
-urls = (
-        '/Binoocle', 'Index',
-        )
 
 
+
+urls = ('/Binoocle', 'Index',)
 
 app = web.application(urls, globals())
 render = web.template.render('templates')
-sp = Spliter(Readfiles())
-sp.constructor()
+sp = Spliter()
+
 
 
 #首页类
@@ -32,14 +31,19 @@ class Index:
         print contents
         targets = list(jieba.cut_for_search(contents['title']))
         idlist = sp.query(contents['title'])
+        print contents['title']
         shows = []
         for item in idlist:
             shows.append(ObjectConstrcutor(item, targets))
         return render.main(shows)
 
 if __name__ == '__main__':
-    print 'readover'
+    sp.read_files()
+    print 'read_over'
     app.run()
+
+
+
 
 
 

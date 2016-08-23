@@ -30,8 +30,8 @@ class Spider(object):
                 self.log_counter += 1
                 if self.log_counter % 100 == 0:
                     print('Spider_INFO ' + str(self.log_counter))
-                if self.log_counter >= 100:
-                    return
+                # if self.log_counter >= 100:
+                #     return
 
     def start(self):
         parser = HtmlParserMainText()

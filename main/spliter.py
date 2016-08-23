@@ -11,92 +11,79 @@ if sys.getdefaultencoding() != default_encoding:
 
 import jieba
 
-
-
-global_cache_word = dict()
-global_cache_files = []
-
-def Readfiles():
-    global global_cache_files
-    if global_cache_files:
-        return global_cache_files
-
-    bad = 0
-    cnt = 0
-    for ide in range(100000):
-        filename = 'info/' + str(ide) + '.txt'
-        try:
-            f = open(filename, 'r')
-            url = f.readline()[:-1]
-            tmp = URL(url, ide)
-            n = int(f.readline()[:-1])
-            for i in range(n):
-                tmp.link_to.append(int(f.readline()[:-1]))
-            tmp.text = f.readline()[:-1]
-            tmp.rank = float(f.readline()[:-1])
-            global_cache_files.append(tmp)
-            bad = 0
-            cnt += 1
-            if cnt % 100 == 0:
-                print 'read', cnt
-        except:
-            bad += 1
-            if bad == 100:
-                break
-
-    return global_cache_files
+def get_most_k_value(k, li):
+    """从列表中找出出现次数前k个的数值"""
+    counter = dict()
+    for item in li:
+        if item not in counter:
+            counter[item] = 1
+        else:
+            counter[item] += 1
+    ret = sorted(counter.items(), key=lambda d: d[1],reverse=True)
+    return [x[0] for x in ret][:k]
 
 
 class Spliter(object):
-    def __init__(self, urls):
-        self.urls = urls
+    def __init__(self):
+
         self.stop_word = set()
-
-
-    def pre_read(self):
+        self.cache = dict()
+        self.memory = dict()
         with open('stopword.txt', 'r') as f:
             for line in f:
                 if line[:-1] != '':
                     self.stop_word.add(line[:-1])
 
-    def constructor(self):
-        if global_cache_word:
-            return
-        self.pre_read()
-        cnt = 0
-        for URL in self.urls:
-            cnt += 1
-            if cnt % 100 == 0:
-                print 'construct-', cnt
-            after = jieba.cut_for_search(URL.text)
-            for item in after:
-                if item not in self.stop_word:
-                    if item not in global_cache_word:
-                        global_cache_word[item] = []
-                        global_cache_word[item].append(URL.id)
-                    else:
-                        global_cache_word[item].append(URL.id)
 
-    #先仅仅按照相关新排序
-    def query(self, word):
-        word = unicode(word)
-        words = jieba.cut_for_search(word)
-        rawlist = []
-        # BUG-TO-FIX-白名单不起作用了
-        for item in words:
-            if item in self.stop_word:
-                #print 'stop_word'
-                continue
-            if item not in global_cache_word:
-                #print 'not in'
-                continue
-            rawlist.extend(global_cache_word[item])
-        counter = dict()
-        for item in rawlist:
-            if item not in counter:
-                counter[item] = 1
-            else:
-                counter[item] += 1
-        ret = sorted(counter.items(), key=lambda d: d[1], reverse=True)
-        return [x[0] for x in ret][:50]
+    def read_files(self):
+        bad, cnt = 0, 0
+        for ide in range(100000):
+            filename = 'info/' + str(ide) + '.txt'
+            try:
+                f = open(filename, 'r')
+                url = f.readline()[:-1]
+                url_obj = URL(url, ide)
+                n = int(f.readline()[:-1])
+                for i in range(n):
+                    url_obj.links_id.append(int(f.readline()[:-1]))
+                url_obj.text = f.readline()[:-1]
+
+                # 读取完成之后直接构建词语列表
+                after_split_text = jieba.cut_for_search(url_obj.text)
+                for word in after_split_text:
+                    if word in self.stop_word:
+                        continue
+                    if word not in self.cache:
+                        self.cache[word] = []
+                    else:
+                        self.cache[word].append(url_obj.id)
+                #构建词语表完成，放到内存中等待取用
+
+                bad, cnt = 0, cnt + 1
+                if cnt % 100 == 0:
+                    print 'Read & Construct ', cnt
+                f.close()
+            except IOError:
+
+                bad += 1
+                if bad == 1000:
+                    break
+        print 'cutting info'
+        for word_, lists in self.cache.items():
+            tmplist = get_most_k_value(50, lists)
+            self.memory[word_] = tmplist
+        self.cache.clear()
+
+
+    #传入的是一个句子
+    def query(self, strings):
+        strings = unicode(strings)
+        words = jieba.cut_for_search(strings)
+
+        raw_list = []
+        for word in words:
+            if word in self.memory:
+                raw_list.extend(self.memory[word])
+        return get_most_k_value(50, raw_list)
+
 
