@@ -19,6 +19,7 @@ urls = ('/Binoocle', 'Index',)
 app = web.application(urls, globals())
 render = web.template.render('templates')
 sp = Spliter()
+sp.read_files()
 
 
 
@@ -38,7 +39,7 @@ class Index:
         return render.main(shows)
 
 if __name__ == '__main__':
-    sp.read_files()
+    
     print 'read_over'
     app.run()
 
