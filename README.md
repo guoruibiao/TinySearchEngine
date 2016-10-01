@@ -16,8 +16,7 @@
 
 ### More optimizations to do.
 
-- 使用mysql数据库，不使用磁盘读写
-- 查询的时候综合rank（权威性和相关性）进行综合排名
+- 查询的时候综合rank算法（权威性和相关性）进行综合排名
 - 提供查询的选项,翻页的选项
 - 提高代码的可扩展性，兼容性
 
@@ -28,7 +27,7 @@
 
 - [web.py中文社区](http://www.zhihu.com/question/24226159)
 - [廖雪峰的官方网站](http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000)
-- [numpy](http://blog.csdn.net/hickai/article/details/23431843)、
+- [numpy](http://blog.csdn.net/hickai/article/details/23431843)
 - [jieba分词](http://www.oschina.net/p/jieba/)
 - [文本处理的概念](http://www.tuicool.com/articles/Q32Y3q)
 - [python2的头两行](http://www.crifan.com/python_head_meaning_for_usr_bin_python_coding_utf-8/)
@@ -41,3 +40,25 @@
 - [webpy数据库入门](http://www.liaoxuefeng.com/article/001373891312159987278f8f31248fd9ad8aca21a3f0e6b000)
 - [webpy模板](http://www.jianshu.com/p/7817641efe8d)
 - [其他实现](http://blog.csdn.net/napoay/article/details/51477586)
+- [sqlite](http://www.yiibai.com/sqlite/sqlite_python.html)
+- [sqlite](http://www.cnblogs.com/zibuyu/p/3564408.html)
+
+
+# Part IV
+
+
+
+### Spider爬虫程序
+
+- 以根节点，进行BFS，多线程，同时调用parser进行网页解析，建立对象，放到全局缓冲区。
+- 将缓冲区中的对象进一步处理，网址用索引替换，计算一个网页能够链接到哪些网页等额外的信息，进一步处理成另外一种对象。
+- 将对象信息以文件的形式，```id.txt```存放到磁盘。
+- 读取文件，以```unicode```建立倒排索引，放到数据库中。
+
+### webpy主程序
+
+- 建立首页，查询页的模板。
+- 封装数据库查询操作。建立webpy框架。
+- 查询数据库，返回，含有```list[int]```，含有查询文字的网页索引。
+- 根据索引，读取文件信息，建立渲染对象。
+
