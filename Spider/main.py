@@ -1,4 +1,5 @@
 
+from spliter import *
 
 from spider import *
 from Constructor import *
@@ -7,6 +8,7 @@ from URL import *
 from utility import *
 #from spliter import *
 import time
+
 
 
 start = time.clock()
@@ -24,7 +26,9 @@ ctr.construct_write()
 print('Write over')
 end = time.clock()
 print('Ctr cost ', end-start, ' second')
-
+sp = Spliter()
+sp.read_files()
+print('all_done')
 
 
 

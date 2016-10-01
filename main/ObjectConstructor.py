@@ -28,6 +28,7 @@ class ObjectConstrcutor(object):
 
     def __init__(self, id, query_words):
         """通过目标url的id和查询的单词列表来初始化对象"""
+
         with open('info/' + str(id) +'.txt', 'r') as f:
             self.url = f.readline()[:-1]
             n = int(f.readline()[:-1])

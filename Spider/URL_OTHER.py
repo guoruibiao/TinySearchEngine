@@ -6,7 +6,7 @@ if sys.getdefaultencoding() != default_encoding:
     sys.setdefaultencoding(default_encoding)
 
 
-class URL(object):
+class URL_OTHER(object):
     #每个URL对象的几个特征
 
     def __init__(self, url, id_):
