@@ -10,6 +10,7 @@ if sys.getdefaultencoding() != default_encoding:
 
 
 
+
 """python2 和 3的写法有点区别"""
 def GetHtmlStr(current_url):
     htmlstr = ''

@@ -7,6 +7,7 @@ if sys.getdefaultencoding() != default_encoding:
     reload(sys)
     sys.setdefaultencoding(default_encoding)
 
+
 import web
 from Queryer import *
 from ObjectConstructor import *

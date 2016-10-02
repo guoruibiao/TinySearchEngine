@@ -13,6 +13,7 @@ if sys.getdefaultencoding() != default_encoding:
 
 import jieba
 
+
 def get_most_k_value(k, li):
     """从列表中找出出现次数前k个的数值"""
     counter = dict()
