@@ -8,7 +8,6 @@ from my_parser import *
 import logging
 logging.basicConfig(level=logging.INFO)
 
-
 class Spider(object):
     def __init__(self, root_url):
         self.root_url = root_url
@@ -30,7 +29,7 @@ class Spider(object):
                 # logging
                 self.log_counter += 1
                 if self.log_counter % 100 == 0:
-                    print('Spider_INFO ' + str(self.log_counter))
+                    logging.info('Spider_INFO ' + str(self.log_counter))
                 if self.log_counter >= 100:
                     return
 

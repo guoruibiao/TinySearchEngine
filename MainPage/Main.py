@@ -36,6 +36,7 @@ class Index:
                 shows.append(ObjectConstrcutor(item, targets))
             except:
                 pass
+        # shows.sort(lambda x: x.rank, reverse=True)
         return render.main(shows)
 
 

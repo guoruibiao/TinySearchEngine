@@ -7,6 +7,10 @@ from utility import *
 from URL import *
 global_cache = []
 global_url_counter = 0
+
+import logging
+logging.basicConfig(level=logging.INFO)
+
 class HtmlParserMainText(HTMLParser):
     def __init__(self):
         HTMLParser.__init__(self)

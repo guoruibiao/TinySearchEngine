@@ -1,34 +1,40 @@
 
 from spliter import *
-
 from spider import *
 from Constructor import *
 #from rankpage import *
 from URL import *
 from utility import *
-#from spliter import *
+import logging
+logging.basicConfig(level=logging.INFO)
 import time
 
 
-
 start = time.clock()
-print('Spider_start')
+logging.info('Spider_Start')
 spider = Spider('http://news.dlut.edu.cn/')
 spider.start()
-print('Spider Over')
+logging.info('Spider_Over')
 end = time.clock()
-print('Spider cost ', end-start, ' second')
+logging.info('Spider_cost ', end-start, ' second')
 
 start = time.clock()
-print('construct and write start')
+logging.info('construct and write start')
 ctr = Contructor_Writer(global_cache)
 ctr.construct_write()
-print('Write over')
+logging.info('Write over')
 end = time.clock()
-print('Ctr cost ', end-start, ' second')
+logging.info('Ctr cost ', end-start, ' second')
+
+start = time.clock()
+logging.info('Spliter start write to sqlite')
 sp = Spliter()
 sp.read_files()
-print('all_done')
+end = time.clock()
+logging.info('spliter cost ', end-start, ' second')
+
+
+logging.info('all_done')
 
 
 

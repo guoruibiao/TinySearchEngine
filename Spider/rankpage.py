@@ -1,21 +1,24 @@
 
 import numpy
+import logging
+logging.basicConfig(level=logging.INFO)
 
-
-def GetMatrixA(urls, id): #url-id编码的dict
-    n = len(urls)
-    A = [[0.0] * n for i in range(n)]
-    for url in urls:
-        for link in url.link_to:
+def GetMatrixA(urls_obj_list):
+    n = len(urls_obj_list)
+    A = [[0.0000000001] * n for i in range(n)]
+    logging.debug('matrix_DBG', n)
+    for url in urls_obj_list:
+        for link_id in url.links_id:
             try:
-                A[url.id][link] += 1
+                A[url.id][link_id] += 1
             except:
-                print('log-error')
+                logging.debug('log-error', url.id, link_id)
                 pass
     return A
 
 
-class RankPage(object):
+class RankPageAlgorithm(object):
+
     def __init__(self, A): #传入一个二维矩阵，和一个一维矩阵
         self.A = numpy.array(A)
         self.B = []
@@ -31,10 +34,3 @@ class RankPage(object):
 
     def deepcalcu(self):
         pass
-
-# A = GetMatrixA(urls, id)
-# ranker = RankPage(A)
-# rankB = ranker.calcu()
-# for i in range(len(rankB)):
-#     urls[i].rank = rankB[i]
-#urls = sorted(urls, key=lambda x: x.rank, reverse=True)

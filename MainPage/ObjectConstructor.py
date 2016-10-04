@@ -32,10 +32,9 @@ class ObjectConstrcutor(object):
 
         with open('info/' + str(id) +'.txt', 'r') as f:
             self.url = f.readline()[:-1]
-            n = int(f.readline()[:-1])
-            for _ in range(n):
-                f.readline()
             self.text_string = f.readline()[:-1]
+            self.rank = float(f.readline()[:-1])
+
         self.html_str = GetHtmlStr(self.url)
         self.query_words = query_words
 
