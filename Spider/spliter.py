@@ -62,7 +62,7 @@ class Spliter(object):
 
                 bad, cnt = 0, cnt + 1
                 if cnt % 100 == 0:
-                    logging.info('Read & Construct_INFO ', cnt)
+                    logging.info('Read & Construct_INFO ' + str(cnt))
                 f.close()
             except IOError:
 

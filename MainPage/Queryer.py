@@ -49,4 +49,4 @@ class SQL_queryer(object):
         raw_list = []
         for word in words:
             raw_list.extend(self.queryer_help(word))
-        return get_most_k_value(50, raw_list)
+        return get_most_k_value(30, raw_list)
