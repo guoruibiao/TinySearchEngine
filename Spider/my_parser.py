@@ -49,9 +49,37 @@ class HtmlParserMainText(HTMLParser):
         self.text = []
         self.link = []
         html_str = self.get_html_str(url)
-        response_string = sub('<script[^>]*?>[^>]*?</script>', '', html_str)  # delete all scripts
+
+        def get_title(html_str):
+
+            i = html_str.find('<title>')
+            j = html_str.find('</title>')
+            if i == -1 or j == -1:
+                i = html_str.find('<TITLE>')
+                j = html_str.find('</TITLE>')
+            return html_str[i + 7:j]
+        origin_title = get_title(html_str)
+
+        def get_time(html_str):
+            import re
+            grouppattern = re.compile(r'(\d+)-(\d+)-(\d+)')
+            biggest = 0
+            record = (0, 0, 0)
+            target = grouppattern.findall(html_str)
+            if not target:
+                return record
+            for year, month, day in target:
+                tmp = (int(year)-2000) * 365 + 12 * int(month) + int(day)
+                if tmp > biggest:
+                    biggest, record = tmp, (year, month, day)
+            return record
+        time = get_time(html_str)
+
+
+        response_string = sub('<script[^>]*?>[^>]*?</script>', '', html_str)  # Delete all scripts
         self.feed(response_string)
         self.close()
+
         chinese_text = ''
         for string in self.text:
             for char in string:
@@ -64,7 +92,7 @@ class HtmlParserMainText(HTMLParser):
             if urlfilter(link):
                 links_to.append(link)
 
-        global_cache.append(URL(url, global_url_counter, chinese_text, links_to))
+        global_cache.append(URL(url, global_url_counter, origin_title, chinese_text, links_to, time))
         global_url_counter += 1
         return links_to
 

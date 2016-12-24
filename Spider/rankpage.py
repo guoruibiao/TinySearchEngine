@@ -1,6 +1,7 @@
 
 import numpy
 import logging
+
 logging.basicConfig(level=logging.INFO)
 
 def GetMatrixA(urls_obj_list):

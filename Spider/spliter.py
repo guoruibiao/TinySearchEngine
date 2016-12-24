@@ -12,9 +12,9 @@ if sys.getdefaultencoding() != default_encoding:
     sys.setdefaultencoding(default_encoding)
 
 
-
 import jieba
 from SQL_sqlite import *
+
 def get_most_k_value(k, li):
     """从列表中找出出现次数前k个的数值"""
     counter = dict()
@@ -25,7 +25,6 @@ def get_most_k_value(k, li):
             counter[item] += 1
     ret = sorted(counter.items(), key=lambda d: d[1], reverse=True)
     return [x[0] for x in ret][:k]
-
 
 class Spliter(object):
 
@@ -46,6 +45,7 @@ class Spliter(object):
             try:
                 f = open(filename, 'r', encoding='utf-8')
                 url = f.readline()[:-1]
+                title = f.readline()[:-1]
                 text = f.readline()[:-1]
 
                 # 读取完成之后直接构建词语列表
@@ -70,8 +70,10 @@ class Spliter(object):
                 if bad == 1000:
                     break
         logging.info('cutting _INFO')
+
         for word_, lists in self.cache.items():
-            tmplist = get_most_k_value(50, lists)
+            # 对于每个词，得到100个最相关的网页id信息，存放到数据库中
+            tmplist = get_most_k_value(100, lists)
             self.sql.Insert(word_, tmplist)
         self.sql.save_close()
         self.cache.clear()

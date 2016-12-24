@@ -2,7 +2,7 @@
 from spliter import *
 from spider import *
 from Constructor import *
-#from rankpage import *
+
 from URL import *
 from utility import *
 import logging

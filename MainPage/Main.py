@@ -11,8 +11,9 @@ if sys.getdefaultencoding() != default_encoding:
 import web
 from Queryer import *
 from ObjectConstructor import *
+import time
 
-urls = ('/Binoocle', 'Index',)
+urls = ('/Binoocle', 'Index', '/Like', 'Like', )
 
 app = web.application(urls, globals())
 render = web.template.render('templates')
@@ -21,24 +22,44 @@ render = web.template.render('templates')
 # 首页类
 class Index:
     def GET(self):
+        timer = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
+        visiter = web.ctx['ip']
+        f = open('log.txt', 'a+')
+        f.write(timer + ' ' + visiter + '\n')
+        f.close()
         return render.index()
 
     def POST(self):
         contents = web.input()
-        print contents
-        targets = list(jieba.cut_for_search(contents['title']))
+        timer = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
+        visiter = web.ctx['ip']
+        f = open('log.txt', 'a+')
+        f.write(timer + ' ' + visiter + ' ' + contents + '\n')
+        f.close()
+        
+        targets = list(jieba.cut_for_search(contents['title']))# 关键词列表
         sq = SQL_queryer('my_engine_data_base.db')
-        idlist = sq.query(contents['title'])
+        idlist = sq.query(contents['title']) # 和关键词相关性比较强的那些网址的id
         print contents['title']
         shows = []
-        for item in idlist:
+        for id in idlist:
             try:
-                shows.append(ObjectConstrcutor(item, targets))
+                shows.append(ObjectConstructor(id, targets))
             except:
                 pass
-        # shows.sort(lambda x: x.rank, reverse=True)
+
+        shows = sorted(shows, key=lambda x: x.time, reverse=True)
         return render.main(shows)
 
+class Like:
+    def GET(self):
+        timer = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
+        visiter = web.ctx['ip']
+        f = open('log.txt', 'a+')
+        f.write(timer + ' ' + visiter + '\n')
+        f.close()
+
+        return render.like()
 
 if __name__ == '__main__':
     print 'read_over'
