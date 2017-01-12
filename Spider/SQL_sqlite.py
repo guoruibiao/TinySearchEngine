@@ -14,12 +14,15 @@ class SQL(object):
 
     def Insert(self, word, lister):
         """插入一个数据元组（单词，单词出现的列表[int,int]）到目标中"""
-        lister = [str(x) for x in lister]
-        adder = ','
-        tar = adder.join(lister)
-        cmd = "INSERT INTO WORDS (ID, VAL) VALUES ('" + word + "', '" + tar + "')"
-        # print(cmd)
-        self.conn.execute(cmd)
+        try:
+            lister = [str(x) for x in lister]
+            adder = ','
+            tar = adder.join(lister)
+            cmd = "INSERT INTO WORDS (ID, VAL) VALUES ('" + word + "', '" + tar + "')"
+            # print(cmd)
+            self.conn.execute(cmd)
+        except:
+            print(word, lister)
 
 
 

@@ -1,7 +1,7 @@
 # coding=utf-8   #默认编码格式为utf-8
 
 from urllib import request
-
+import os
 
 def urlfilter(url):
     """url筛选器"""
@@ -27,3 +27,10 @@ def formuler(url):
     if url.find('/..') != -1:
         url = url.replace('/..', '')
     return url
+
+
+def delete_data_base_if_exist(path):
+    if os.path.exists(path):
+        os.remove(path)
+        print('original db has been removed.')
+

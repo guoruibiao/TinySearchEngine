@@ -38,19 +38,23 @@ class Contructor_Writer(object):
         logging.debug('now_len_url_DBG', len(self.urls))
 
         for url in self.urls:
-            f = open('info/' + str(url.id) + '.txt', 'w+', encoding='utf-8')
+            # url，标题，时间三个值，排序，正文（剩余的
+            f = open('../Main/info/' + str(url.id) + '.txt', 'w+', encoding='utf-8')
             f.write(url.url), f.write('\n')
             f.write(url.title), f.write('\n')
-            f.write(url.text), f.write('\n')
+
+            f.write(str(url.time[0]) + '\n')
+            f.write(str(url.time[1]) + '\n')
+            f.write(str(url.time[2]) + '\n')
 
             try:
                 f.write(str(ranker[url.id]) + '\n')
             except:
                 logging.debug('over-flow', url.id)
+                f.write('inf\n')
 
-            f.write(str(url.time[0]) + '\n')
-            f.write(str(url.time[1]) + '\n')
-            f.write(str(url.time[2]) + '\n')
+            for line in url.text:
+                f.write(line), f.write('\n')
 
             f.close()
 

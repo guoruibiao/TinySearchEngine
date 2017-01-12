@@ -9,21 +9,29 @@ if sys.getdefaultencoding() != default_encoding:
     sys.setdefaultencoding(default_encoding)
 
 
-
 class ObjectConstructor(object):
 
     def __init__(self, id, query_words):
         """通过目标url的id和查询的单词列表来初始化对象"""
 
         with open('info/' + str(id) +'.txt', 'r') as f:
-            self.url = f.readline()[:-1]
-            self.title = f.readline()[:-1]
-            self.text_string = f.readline()[:-1]
-            self.rank = float(f.readline()[:-1])
-            year = int(f.readline()[:-1])
-            month = int(f.readline()[:-1])
-            day = int(f.readline()[:-1])
+
+            contents = list(f)
+            self.url = contents[0][:-1]
+            self.title = contents[1][:-1]
+            year = int(contents[2][:-1])
+            month = int(contents[3][:-1])
+            day = int(contents[4][:-1])
             self.time = (year - 2000) + month * 12 + day
+            self.rank = float(contents[5][:-1])
+            text_contents, self.text_string = contents[6:], ''
+            for line in text_contents:
+                try:
+                    line = unicode(line)
+                    self.text_string = self.text_string + ' ' + line
+                except:
+                    pass
+                    # 不是符合题意的unicode编码舍去此行
 
         self.query_words = query_words
         self.all_words = ''.join(self.query_words)
@@ -71,7 +79,6 @@ class ObjectConstructor(object):
             except:
                 ans += (r'<span>' + item + r'</span>')
         return ans
-
 
     def get_url_ori(self):
         return self.url

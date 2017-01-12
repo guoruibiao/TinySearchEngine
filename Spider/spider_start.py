@@ -8,6 +8,13 @@ from utility import *
 import logging
 logging.basicConfig(level=logging.INFO)
 import time
+import utility
+
+
+# 如果原来的数据库文件存在的话，应该先删除
+
+delete_data_base_if_exist('../Main/my_engine_data_base.db')
+
 
 
 start = time.clock()
@@ -35,8 +42,4 @@ logging.info('spliter cost ' + str(end-start) + ' second')
 
 
 logging.info('all_done')
-
-
-
-
 

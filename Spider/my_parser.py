@@ -1,6 +1,4 @@
 #!/usr/bin.env python
-# 获取正文内容获取链接获取图片
-
 from html.parser import HTMLParser
 from re import sub
 from utility import *
@@ -9,6 +7,7 @@ global_cache = []
 global_url_counter = 0
 
 import logging
+import re
 logging.basicConfig(level=logging.INFO)
 
 class HtmlParserMainText(HTMLParser):
@@ -19,7 +18,7 @@ class HtmlParserMainText(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         if tag == "p":
-            self.text.append("\n")
+            self.text.append('\n')
         elif tag == 'a':
             for name, value in attrs:  # 实际上是一个元组的列表
                 if name == 'href':
@@ -51,7 +50,6 @@ class HtmlParserMainText(HTMLParser):
         html_str = self.get_html_str(url)
 
         def get_title(html_str):
-
             i = html_str.find('<title>')
             j = html_str.find('</title>')
             if i == -1 or j == -1:
@@ -75,24 +73,39 @@ class HtmlParserMainText(HTMLParser):
             return record
         time = get_time(html_str)
 
+        # replace the \n to \s
+        s = ''
+        for char in html_str:
+            adder = ' ' if char == '\n' else char
+            s += adder
 
-        response_string = sub('<script[^>]*?>[^>]*?</script>', '', html_str)  # Delete all scripts
-        self.feed(response_string)
+        re_cdata = re.compile('//<!\[CDATA\[[^>]*//\]\]>', re.DOTALL)  # 匹配CDATA
+        # re_script = re.compile('<\s*script[^>]*>[^<]*<\s*/\s*script\s*>', re.DOTALL)  # Script
+        # 这种方法不能处理里面含有 小于号的情况 2333333
+        re_script = re.compile('<script.*?/script>', re.DOTALL)  # Script
+        re_style = re.compile('<\s*style[^>]*>[^<]*<\s*/\s*style\s*>', re.DOTALL)  # style
+        re_style_upper = re.compile('<\s*STYLE[^>]*>[^<]*<\s*/\s*STYLE\s*>', re.DOTALL)  # upper
+        re_br = re.compile('<br\s*?/?>')  # 处理换行
+        re_h = re.compile('</?\w+[^>]*>')  # HTML标签
+        re_comment = re.compile('<!--[^>]*-->')  # HTML注释
+
+        s = re_cdata.sub('', s)  # 去掉CDATA
+        s = re_script.sub('', s)  # 去掉SCRIPT
+        s = re_style.sub('', s)  # 去掉style
+        s = re_style_upper.sub('', s) # STYLE
+        s = re_br.sub('\n', s)  # 将br转换为换行
+        s = re_comment.sub('', s)  # 去掉HTML注释
+
+        self.feed(s)
         self.close()
-
-        chinese_text = ''
-        for string in self.text:
-            for char in string:
-                if is_chinese(char):
-                    chinese_text += char
 
         links_to = []
         for link in self.link:
             link = formuler(link)
             if urlfilter(link):
                 links_to.append(link)
-
-        global_cache.append(URL(url, global_url_counter, origin_title, chinese_text, links_to, time))
+        # 正文的内容，不再采用一行的方式，显示，采用多行的方式
+        global_cache.append(URL(url, global_url_counter, origin_title, self.text, links_to, time))
         global_url_counter += 1
         return links_to
 

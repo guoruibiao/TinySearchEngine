@@ -29,7 +29,7 @@ def get_most_k_value(k, li):
 class Spliter(object):
 
     def __init__(self):
-        self.sql = SQL('my_engine_data_base.db')
+        self.sql = SQL('../Main/my_engine_data_base.db')
         self.stop_word = set()
         self.cache = dict()
         with open('stopword.txt', 'r', encoding='utf-8') as f:
@@ -41,12 +41,13 @@ class Spliter(object):
     def read_files(self):
         bad, cnt = 0, 0
         for ide in range(100000):
-            filename = 'info/' + str(ide) + '.txt'
+            filename = '../Main/info/' + str(ide) + '.txt'
             try:
                 f = open(filename, 'r', encoding='utf-8')
-                url = f.readline()[:-1]
-                title = f.readline()[:-1]
-                text = f.readline()[:-1]
+                contents = list(f)
+                # 将正文拼接成一行
+                text_lines = contents[6:]
+                text = ' '.join([line[:-1] for line in text_lines])
 
                 # 读取完成之后直接构建词语列表
                 after_split_text = jieba.cut_for_search(text)

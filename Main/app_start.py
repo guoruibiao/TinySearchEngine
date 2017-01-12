@@ -25,7 +25,7 @@ class Index:
         timer = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
         visiter = web.ctx['ip']
         f = open('log.txt', 'a+')
-        f.write(timer + ' ' + visiter + '\n')
+        f.write('Index ' + timer + ' ' + visiter + '\n')
         f.close()
         return render.index()
 
@@ -34,20 +34,23 @@ class Index:
         timer = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
         visiter = web.ctx['ip']
         f = open('log.txt', 'a+')
-        f.write(timer + ' ' + visiter + ' ' + contents + '\n')
+        f.write('Post ' + timer + ' ' + visiter + ' ' + contents['title'] + '\n')
         f.close()
         
         targets = list(jieba.cut_for_search(contents['title']))# 关键词列表
         sq = SQL_queryer('my_engine_data_base.db')
         idlist = sq.query(contents['title']) # 和关键词相关性比较强的那些网址的id
+
         print contents['title']
         shows = []
+
         for id in idlist:
             try:
                 shows.append(ObjectConstructor(id, targets))
             except:
                 pass
-
+                # print 'can not construct obj ', id
+                # obj的构造函数可能出现异常，在这里统一舍弃这个对象
         shows = sorted(shows, key=lambda x: x.time, reverse=True)
         return render.main(shows)
 
@@ -56,12 +59,12 @@ class Like:
         timer = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
         visiter = web.ctx['ip']
         f = open('log.txt', 'a+')
-        f.write(timer + ' ' + visiter + '\n')
+        f.write('Like ' + timer + ' ' + visiter + '\n')
         f.close()
 
         return render.like()
 
 if __name__ == '__main__':
-    print 'read_over'
+    print 'Ready...'
     app.run()
 
